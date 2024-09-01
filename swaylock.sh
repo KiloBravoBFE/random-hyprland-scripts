@@ -1,0 +1,1 @@
+swaylock -i /home/kristian/Pictures/winter-in-bohemia_dark.png --indicator-radius 100 --indicator-idle-visible --ring-color 255,255,255

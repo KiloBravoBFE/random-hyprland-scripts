@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+    /home/kristian/.config/hypr/scripts/cliphist list
+else
+    /home/kristian/.config/hypr/scripts/cliphist decode <<<"$1" | wl-copy
+fi
