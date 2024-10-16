@@ -31,9 +31,10 @@ elif [[ $1 = "-up" ]] && [[ $2 != "" ]]; then
               IFS=: read -r currSSID param <<< $currCon
               echo "++ Already connected to VPN, disconnecting."
        fi
-       sudo nmcli con modify "$currSSID" ipv6.method 'disabled'
-       nmcli connection up "$currSSID"
-       nmcli con up id Skara
+       if [[ "$2" != "UPB" ]]; then
+              sudo nmcli con modify "$currSSID" ipv6.method 'disabled'
+       fi
+       nmcli connection up id "$2"
        echo "++ You should now be connected and IPv6 should be disabled."
 
 elif [[ $1 = "-down" ]] && [[ $2 != "" ]]; then
