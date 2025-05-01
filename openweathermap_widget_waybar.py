@@ -18,6 +18,15 @@ ICON_MAP = {
     "11d": "⛈️",
     "13d": "🌨️",
     "50d": "🌫",
+    "01n": "🌙",
+    "02n": "☁️",
+    "03n": "☁️",
+    "04n": "☁️",
+    "09n": "🌧️",
+    "10n": "🌧️",
+    "11n": "⛈️",
+    "13n": "🌨️",
+    "50n": "🌫"
 }
 
 UNITS_MAP = {
@@ -39,8 +48,19 @@ def deg_to_dir(deg):
 
 def main():
 
+    # Get env-vars
+    apikey = os.getenv("WAYBAR_WEATHER_APIKEY")
+    default_postal = os.getenv("WAYBAR_WEATHER_DEF_POSTAL", 33619)
+    units = os.getenv("WAYBAR_WEATHER_UNITS", "metric")
+    icon_units = os.getenv("WAYBAR_WEATHER_ICON_UNITS", "metric-simple")
+
     try:
+        postal = ""
         ip = requests.get("https://ipinfo.io/ip").text
+    except Exception as e:
+        return print(e)
+
+    if (str(postal) != "33619"):
         try:
             textpostal = requests.get(f"https://ipinfo.io/{ip}/postal").text
             postal = textpostal.replace(" ", "%20").replace("\n", "")
@@ -52,28 +72,26 @@ def main():
                 op_info = "Unknown"
         except Exception as e:
             return print(e)
-    except Exception as e:
-        return print(e)
-    # Handle wrong / useless postal codes
-    if (postal == "33519"):
-        postal, textpostal = "33619", "33619"
-    elif (postal == "531%2001"):
-        postal, textpostal = "532%2033", "532 33"
-    # Handle Telefónica NRW IP-range (useless)
-    elif (ip.startswith("176.1.")):
-        postal, textpostal = default_postal, default_postal
-    # Handle Telekom T-Mobile IP-range (useless)
-    elif (ip.startswith("80.187.")):
-        postal, textpostal = default_postal, default_postal
-        print(postal)
-    
+            # Handle wrong / useless postal codes
+        if (postal == "33519"):
+            postal, textpostal = "33619", "33619"
+        elif (postal == "531%2001"):
+            postal, textpostal = "532%2033", "532 33"
+        # Handle Telefónica NRW IP-range (useless)
+        elif (ip.startswith("176.1.")):
+            postal, textpostal = default_postal, default_postal
+        # Handle Telekom T-Mobile IP-range (useless)
+        elif (ip.startswith("80.187.")):
+            postal, textpostal = default_postal, default_postal
+
     dst_active = time.localtime().tm_isdst
     tz = time.tzname[dst_active]
 
-    apikey = os.getenv("WAYBAR_WEATHER_APIKEY")
-    default_postal = os.getenv("WAYBAR_WEATHER_DEF_POSTAL", 33619)
-    units = os.getenv("WAYBAR_WEATHER_UNITS", "metric")
-    icon_units = os.getenv("WAYBAR_WEATHER_ICON_UNITS", "metric-simple")
+    # I don't like this but for whatever reason Python still does not have a proper way to deal with IANA
+    # And for whatever reason ZoneInfo does not particularly like daylight saving.
+    if (tz in ("CEST", "CET")):
+        tz = "Europe/Berlin"
+
 
     if (not postal):
         postal = default_postal
@@ -107,9 +125,9 @@ def main():
             sys.exit(data["text"])
             sys.exit()
 
-
     temp = weather["main"]["temp"]
     icon = ICON_MAP.get(weather["weather"][0]["icon"], "")
+    description = weather["weather"][0]["description"]
     feels_like = weather["main"]["feels_like"]
     humidity = weather["main"]["humidity"]
     pressure = weather["main"]["pressure"]
@@ -127,6 +145,8 @@ def main():
 
     data["text"] = f"{icon} {temp:.1f}{UNITS_MAP[icon_units][0]}"
     data["tooltip"] = f"""
+        {description.capitalize()}
+
         City: {city}, {textpostal}, {country_code}
         Feels like: {feels_like:.1f}{UNITS_MAP[units][0]}
         Pressure: {pressure} hPa
