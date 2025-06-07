@@ -56,10 +56,33 @@ elif [[ $1 = "-h" ]]; then
                 -def                        To connect to default VPN (id:Skara)
                 -defdn                      To disconnect from default VPN (id:Skara)
 
+				$your-vpn-id [-ipv6]		To toggle between on/off with custom VPN
+
 				Replace values beginning with $ with you inputs. Do not enter brackets.
+				The IPv6-option disregards modifying settings for IPv6-traffic entirely.
 
        '
-
+elif [[ $1 != "" ]]; then
+		currCon="$(nmcli -t con | head -n 1)"
+		IFS=: read -r currSSID param <<< $currCon
+		if [[ "$currSSID" == "$1" ]]; then
+			nmcli con down id "$1"
+			echo "++ $1 was active, disconnected."
+			if [[ "$2" != "-ipv6" ]]; then # see this as a kind of "disregard IPv6".
+				currCon="$(nmcli -t con | head -n 1)"
+				IFS=: read -r currSSID param <<< $currCon
+				sudo nmcli con modify "$currSSID" ipv6.method 'auto'
+				nmcli con up "$currSSID"
+				echo "++ IPv6 should be active (again)"
+			fi	
+		else
+			if [[ "$2" != "-ipv6" ]]; then
+				sudo nmcli con modify "$currSSID" ipv6.method 'disabled'
+				echo "++ IPv6 protocol should now be disabled."
+			fi
+			nmcli con up id "$1"
+			echo "++ You should now be connected. Enter -down $1 as param to disconnect."
+		fi	
 
 else
        echo "Unknown param"
