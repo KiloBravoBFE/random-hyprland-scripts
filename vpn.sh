@@ -58,7 +58,7 @@ elif [[ $1 = "-h" ]]; then
 
 				$your-vpn-id [-ipv6]		To toggle between on/off with custom VPN
 
-				Replace values beginning with $ with you inputs. Do not enter brackets.
+				Replace values beginning with $ with your inputs. Do not enter brackets.
 				The IPv6-option disregards modifying settings for IPv6-traffic entirely.
 
        '
