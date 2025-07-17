@@ -274,6 +274,59 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("VT", m.group(1))
         
+        m = re.search(r'Hochbahn.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Hochbahn", int(m.group(1))) 
+        
+        m = re.search(r'DT\s+5\s+(\d{3}(?:-\d)?)', line, re.IGNORECASE)
+        if m:
+            return ("Hochbahn DT 5", m.group(1))
+        
+        m = re.search(r'Böddeker.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Böddeker", int(m.group(1))) 
+        
+        m = re.search(r'Emsdettener.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Emsdettener", int(m.group(1))) 
+        
+        m = re.search(r'Erfmann.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Erfmann", int(m.group(1))) 
+        
+        m = re.search(r'VR.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("VR Sverige", int(m.group(1))) 
+        
+        m = re.search(r'SL.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Storstockholms Lokaltrafik", int(m.group(1))) 
+        
+        m = re.search(r'Tholen Busreise.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Tholen", int(m.group(1))) 
+        
+        m = re.search(r'Omnibus Kückelheim.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Kückelheim", int(m.group(1))) 
+        
+        m = re.search(r'Reifers Reisen.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Reifers", int(m.group(1))) 
+        
+        m = re.search(r'Kanalreisen Kruse.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Kanalreisen Kruse", int(m.group(1))) 
+        
+        m = re.search(r'Held Reisen.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Held Reisen", int(m.group(1))) 
+        
+        m = re.search(r'SkyTrain\s+(\d\.\d{1})[a-h]?', line, re.IGNORECASE)
+        if m:
+            return ("SkyTrain", m.group(1))
+
+        
         
         
         
@@ -322,12 +375,12 @@ def sec_extract_vehicle_number(value):
             return ("Unknown", int(m.group(1)))
         
 
-        #print(f"Unknown vehicle number in line: {line}")
+        print(f"Unknown vehicle number in line: {line}")
     return None
 
 fleet = dict()
 
-with open('export.csv', 'r', encoding='utf-8') as csvfile:
+with open('export-3.csv', 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         next(reader)  # Skip header row
 
