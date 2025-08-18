@@ -106,11 +106,11 @@ def sec_extract_vehicle_number(value):
         
         m = re.search(r'KVP.*?(\d{3,4})', line, re.IGNORECASE)
         if (m):
-            return ("KVP",int(m.group(1)))
+            return ("Kraftverkehrsgesellschaft Paderborn",int(m.group(1)))
         
         m = re.search(r'Kraftverkehrsgesellschaft Paderborn.*?(\d{3,4})', line, re.IGNORECASE)
         if (m):
-            return ("KVP",int(m.group(1)))
+            return ("Kraftverkehrsgesellschaft Paderborn",int(m.group(1)))
         
         m = re.search(r'Mietrach.*?(\d{3,4})', line, re.IGNORECASE)
         if (m):
@@ -227,10 +227,6 @@ def sec_extract_vehicle_number(value):
         m = re.search(r'M/F\s+([^\d\n]+)', line, re.IGNORECASE)
         if m:
             return ("ferry", m.group(1).strip())
-        
-        m = re.search(r'432.*?(\d{3,4})', line, re.IGNORECASE)
-        if m:
-            return ("RRX", f"432 {m.group(1)}")
         
         m = re.search(r'Tz.*?(\d{3,4})', line, re.IGNORECASE)
         if (m and int(m.group(1))!=412):
