@@ -318,6 +318,18 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("Held Reisen", int(m.group(1))) 
         
+        m = re.search(r'Edzards.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Edzards", int(m.group(1)))
+        
+        m = re.search(r'Stoffregen.*?(\d{2,3})', line, re.IGNORECASE)
+        if m:
+            return ("Stoffregen", int(m.group(1)))
+        
+        m = re.search(r'(Spiekeroog\s+[IVXLCDM]+)', line, re.IGNORECASE)
+        if m:
+            return ("ferry", m.group(1))
+
         m = re.search(r'SkyTrain\s+(\d\.\d{1})[a-h]?', line, re.IGNORECASE)
         if m:
             return ("SkyTrain", m.group(1))
