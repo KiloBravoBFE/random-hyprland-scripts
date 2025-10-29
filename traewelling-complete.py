@@ -164,9 +164,6 @@ def sec_extract_vehicle_number(value):
         if (m):
             return ("RRX", m.group(1))
         
-        m = re.fullmatch(r'ET.*?(\d{3,4})', line, re.IGNORECASE)
-        if (m):
-            return ("ET",int(m.group(1)))
         
         m = re.search(r'KVB.*?(\d{3,4})', line, re.IGNORECASE)
         if (m):
@@ -228,6 +225,12 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("ferry", m.group(1).strip())
         
+        m = re.search(r'M/S\s+([A-Za-zÄÖÜäöüß\s\-]+?)(?=[\r\n\(\:\-]|$)', line, re.IGNORECASE)
+        if m:
+            ferry_name = m.group(1).strip()
+            if ferry_name.lower() != "estonia":
+                return ("ferry", ferry_name)
+        
         m = re.search(r'Tz.*?(\d{3,4})', line, re.IGNORECASE)
         if (m and int(m.group(1))!=412):
             return ("ICE", int(m.group(1)))
@@ -262,7 +265,7 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("DSB", int(m.group(1))) 
         
-        m = re.search(r'ET\s+(\d\.\d{2})[a-h]?', line, re.IGNORECASE)
+        m = re.search(r'\bET\s+(\d+(?:\.\d+)+)[a-h]?', line, re.IGNORECASE)
         if m:
             return ("ET", m.group(1))
         
@@ -320,7 +323,7 @@ def sec_extract_vehicle_number(value):
         
         m = re.search(r'Edzards.*?(\d{3,4})', line, re.IGNORECASE)
         if m:
-            return ("Edzards", int(m.group(1)))
+            return ("Edzards-Reisen", int(m.group(1)))
         
         m = re.search(r'Stoffregen.*?(\d{2,3})', line, re.IGNORECASE)
         if m:
@@ -334,6 +337,29 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("SkyTrain", m.group(1))
 
+        m = re.search(r'GSAB.*?(\d{2,3})', line, re.IGNORECASE)
+        if m:
+            return ("Göteborgs Spårvägar", int(m.group(1)))
+        
+        m = re.search(r'Keolis.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Keolis", int(m.group(1)))
+        
+        m = re.search(r'Nobina.*?(\d{2,3})', line, re.IGNORECASE)
+        if m:
+            return ("Nobina", int(m.group(1)))
+        
+        m = re.search(r'Transdev.*?(\d{2,3})', line, re.IGNORECASE)
+        if m:
+            return ("Transdev", int(m.group(1)))
+        
+        m = re.search(r'Ukna.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Ukna Busstrafik", int(m.group(1)))
+        
+        m = re.search(r'Leja-Touring.*?(\d{4,5})', line, re.IGNORECASE)
+        if m:
+            return ("Leja-Touring", int(m.group(1)))
         
         
         
