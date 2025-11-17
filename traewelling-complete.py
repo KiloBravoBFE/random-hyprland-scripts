@@ -205,9 +205,13 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("Königsborner", int(m.group(1)))
         
-        m = re.search(r'Hermesmeyer.*?(\d{2,4})$', line.strip(), re.IGNORECASE)
+        m = re.search(r'Hermesmeyer LA.*?(\d{2,4})$', line.strip(), re.IGNORECASE)
         if (m):
-            return ("Hermesmeyer", int(m.group(1)))
+            return ("Hermesmeyer", "LA " + str(int(m.group(1))))
+
+        m = re.search(r'Hermesmeyer BF.*?(\d{2,4})$', line.strip(), re.IGNORECASE)
+        if (m):
+            return ("Hermesmeyer", "BF " + str(int(m.group(1))))
         
         m = re.search(r'Rheinbahn.*?(\d{3,4})$', line.strip(), re.IGNORECASE)
         if (m):
@@ -246,6 +250,14 @@ def sec_extract_vehicle_number(value):
         m = re.search(r'Bernie Reisen.*?(\d{3,4})', line, re.IGNORECASE)
         if m:
             return ("Bernie Reisen", int(m.group(1))) 
+        
+        m = re.search(r'Stadtbus Gütersloh.*?(\d{2,3})', line, re.IGNORECASE)
+        if m:
+            return ("Stadtbus Gütersloh", int(m.group(1)))
+        
+        m = re.search(r'Höber.*?(\d{3,4})', line, re.IGNORECASE)
+        if m:
+            return ("Höber", int(m.group(1))) 
         
         m = re.search(r'X31K.*?(\d{4})', line, re.IGNORECASE)
         if m:
