@@ -205,13 +205,11 @@ def sec_extract_vehicle_number(value):
         if m:
             return ("Königsborner", int(m.group(1)))
         
-        m = re.search(r'Hermesmeyer LA.*?(\d{2,4})$', line.strip(), re.IGNORECASE)
-        if (m):
-            return ("Hermesmeyer", "LA " + str(int(m.group(1))))
-
-        m = re.search(r'Hermesmeyer BF.*?(\d{2,4})$', line.strip(), re.IGNORECASE)
-        if (m):
-            return ("Hermesmeyer", "BF " + str(int(m.group(1))))
+        m = re.search(r'Hermesmeyer\s([A-Z]{2})\s(\d{2,4})$', line.strip(), re.IGNORECASE)
+        if m:
+            code = m.group(1).upper()  # e.g., "LA", "BF", "BD"
+            number = int(m.group(2))   # e.g., 65
+            return ("Hermesmeyer", f"{code} {number}")
         
         m = re.search(r'Rheinbahn.*?(\d{3,4})$', line.strip(), re.IGNORECASE)
         if (m):
@@ -460,7 +458,10 @@ for operator in fleet:
     fleet[operator] = dict(sorted(fleet[operator].items(), key=lambda x: x[1], reverse=True))
 sorted_fleet = sorted(fleet.items(), key=lambda x: x[0], reverse=False)
 for operator in fleet:
-    print(f"{operator}:")
+    sum = 0
+    for vehicle in fleet[operator]:
+        sum += fleet[operator][vehicle]
+    print(f"({sum}) - {operator}:")
     for vehicle in fleet[operator]:
         print(f"  {vehicle}: {fleet[operator][vehicle]}")
 
@@ -474,5 +475,18 @@ with open("output.txt", "w", encoding="utf-8") as f:
         f.write(f"{operator}:\n")
         for vehicle in fleet[operator]:
             f.write(f"  {vehicle}: {fleet[operator][vehicle]}\n")
+
+    f.write("\n \n")
+    sums = dict()
+    for operator in fleet:
+        sum = 0
+        for vehicle in fleet[operator]:
+            sum += fleet[operator][vehicle]
+        sums[operator] = sum
+    sorted_sums = sorted(sums.items(), key=lambda x: x[1], reverse=True)
+    for operator, sum in sorted_sums:
+        f.write(f"({sum}) - {operator}\n")
+
+
 
 
